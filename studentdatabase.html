@@ -1,0 +1,104 @@
+<html>
+
+<head>
+  <title>StudentDatabase</title>
+  <style>
+    .container {
+      display: flex;
+      gap: 10px;
+      margin-top: 10%;
+    }
+
+    .frame {
+      border: 1px solid black;
+    }
+
+    .label {
+      width: 50px;
+    }
+
+    .clr {
+      background-color: rgb(33, 185, 58);
+      border-radius: 10px;
+      color: black;
+    }
+
+    .add {
+      background-color: black;
+      color: white;
+    }
+
+    .action {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      border: 1px solid black;
+      padding: 4px
+    }
+
+    .clr2 {
+      background-color: brown;
+      border-radius: 6px;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div>
+      <table class="frame">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Tamil</th>
+            <th>English</th>
+            <th>Maths</th>
+            <th>Science</th>
+            <th>Social</th>
+            <th>Total</th>
+          </tr>
+        <tbody>
+          <tr>
+            <td><button class="clr">Delete</button></td>
+            <td><input type="text" /></td>
+            <td><input type="text" class="label" /></td>
+            <td><input type="text" class="label" /></td>
+            <td><input type="text" class="label" /></td>
+            <td><input type="text" class="label" /></td>
+            <td><input type="text" class="label" /></td>
+            <td><input type="text" class="label" /></td>
+          </tr>
+          <tr>
+            <td><button class="clr">Delete</button></td>
+            <td><input type="text" /></td>
+            <td><input type="text" class="label" /></td>
+            <td><input type="text" class="label" /></td>
+            <td><input type="text" class="label" /></td>
+            <td><input type="text" class="label" /></td>
+            <td><input type="text" class="label" /></td>
+            <td><input type="text" class="label" /></td>
+          </tr>
+        </tbody>
+        </thead>
+      </table>
+    </div>
+    <div class="action">
+      <label>Action</label>
+      <button class="clr2">Edit</button>
+      <button class="clr2">Edit</button>
+    </div>
+      <div>
+        <button class="add">Add Student</button>
+      </div>
+      <div class="action">
+        <label>Rank</label>
+       <input type="number" class="label" />
+       <input type="number"class="label" />
+
+      </div>
+  </div>
+</body>
+
+</html>
