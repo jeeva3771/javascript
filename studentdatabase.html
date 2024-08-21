@@ -2,103 +2,236 @@
 
 <head>
   <title>StudentDatabase</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <style>
-    .container {
-      display: flex;
-      gap: 10px;
-      margin-top: 10%;
+    .addstud {
+      background-color: black;
+      color: white;
+      height: 40px;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
-    .frame {
-      border: 1px solid black;
+    .addLabel {
+      display: flex;
+      justify-content: right;
+      padding-bottom: 10px;
+    }
+
+    .radioButton {
+      font-family: inherit;
+      font-size: large;
+      font-weight: 500;
     }
 
     .label {
-      width: 50px;
+      border: none;
     }
 
-    .clr {
-      background-color: rgb(33, 185, 58);
-      border-radius: 10px;
-      color: black;
+    table input[type] {
+      width: 100px;
     }
 
-    .add {
-      background-color: black;
-      color: white;
+    .rowError td {
+      background-color: red;
     }
 
-    .action {
+    .container {
+      width: 1030px;
+    }
+
+    .resize {
       display: flex;
-      flex-direction: column;
-      gap: 2px;
-      border: 1px solid black;
-      padding: 4px
+      justify-content: center;
     }
 
-    .clr2 {
-      background-color: brown;
-      border-radius: 6px;
-      color: white;
+    .radioLabel {
+      margin-top: 10px;
+    }
+
+    input[type=radio] {
+      border: 1px solid gray;
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <div>
-      <table class="frame">
+    <div class="form-check form-check-inline radioLabel">
+      <input class="form-check-input" type="radio" checked="false"  name="inlineRadioOptions" id="total" value="option1">
+      <label class="form-check-label radioButton" for="total">Rank by total</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="priority" value="option2">
+      <label class="form-check-label radioButton" for="priority">Rank by priority</label>
+    </div>
+    <div class="addLabel">
+      <button class="addstud" onclick="addStudent()">Add Student</button>
+    </div>
+    <div class="resize">
+      <table class="table table-striped">
         <thead>
           <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Tamil</th>
-            <th>English</th>
-            <th>Maths</th>
-            <th>Science</th>
-            <th>Social</th>
-            <th>Total</th>
+            <th scope="col">Name</th>
+            <th scope="col">Tamil</th>
+            <th scope="col">English</th>
+            <th scope="col">Maths</th>
+            <th scope="col">Science</th>
+            <th scope="col">Social</th>
+            <th scope="col">Total</th>
+            <th scope="col">Rank</th>
+            <th scope="col">Action</th>
           </tr>
-        <tbody>
-          <tr>
-            <td><button class="clr">Delete</button></td>
-            <td><input type="text" /></td>
-            <td><input type="text" class="label" /></td>
-            <td><input type="text" class="label" /></td>
-            <td><input type="text" class="label" /></td>
-            <td><input type="text" class="label" /></td>
-            <td><input type="text" class="label" /></td>
-            <td><input type="text" class="label" /></td>
-          </tr>
-          <tr>
-            <td><button class="clr">Delete</button></td>
-            <td><input type="text" /></td>
-            <td><input type="text" class="label" /></td>
-            <td><input type="text" class="label" /></td>
-            <td><input type="text" class="label" /></td>
-            <td><input type="text" class="label" /></td>
-            <td><input type="text" class="label" /></td>
-            <td><input type="text" class="label" /></td>
-          </tr>
-        </tbody>
         </thead>
+        <tbody id="studentList">
+
+        </tbody>
       </table>
     </div>
-    <div class="action">
-      <label>Action</label>
-      <button class="clr2">Edit</button>
-      <button class="clr2">Edit</button>
-    </div>
-      <div>
-        <button class="add">Add Student</button>
-      </div>
-      <div class="action">
-        <label>Rank</label>
-       <input type="number" class="label" />
-       <input type="number"class="label" />
-
-      </div>
   </div>
 </body>
+<script>
+  var studentList = document.getElementById("studentList")
+  var rankDatabase = []
+
+  function rankBasedOnTotal() {
+    var sortedRanks = rankDatabase.sort((a, b) => { return b.total - a.total })
+    var currentRank = 0;
+    var sameRank = 1
+
+    for (var i = 0; i < sortedRanks.length; i++) {
+      var element = sortedRanks[i];
+      var rankInput = element.row.querySelector('input[result="rank"]');
+      var isFailGrade = element.marks.some(mark => mark < 35);
+
+      if (isFailGrade) {
+        rankInput.value = 0;
+      } else {
+        if (i > 0 && sortedRanks[i].total === sortedRanks[i - 1].total) {
+          rankInput.value = currentRank;
+          sameRank++
+        } else {
+          if (sameRank > 1) {
+            currentRank = currentRank + sameRank
+            sameRank = 1
+          } else {
+            currentRank++;
+          }
+          rankInput.value = currentRank;
+        }
+      }
+    }
+  }
+
+  function rankBasedOnPriority() {
+    const rankGroup = {}
+    const rankGroupKey = []
+    var currentRank = 0;
+  
+    const dataSorted = rankDatabase.sort((a, b) => b.total - a.total)
+    for (i = 0; i < dataSorted.length; i++) {
+      var t = dataSorted[i].total
+      if (rankGroup[t]) {
+        const combined = [...rankGroup[t], dataSorted[i]];
+        var nameSorted = combined.sort((a, b) => {
+          return a.name.localeCompare(b.name) || b.marks[0] - a.marks[0] || b.marks[1] - a.marks[1] || b.marks[2] - a.marks[2] || b.marks[3] - a.marks[3] || b.marks[4] - a.marks[4]
+        })
+        rankGroup[t] = nameSorted
+      } else {
+        rankGroup[t] = [dataSorted[i]]
+      }
+    }
+    for (let key in rankGroup) {
+      rankGroupKey.push(key)
+    }
+
+    rankGroupKey.sort((a, b) => b - a);
+
+    for (i = 0; i < rankGroupKey.length; i++) {
+      const key = rankGroupKey[i];
+      const elements = rankGroup[key];
+
+      elements.forEach((element) => {
+        const rankInput = element.row.querySelector('input[result="rank"]');
+        const isFailGrade = element.marks.some(mark => mark < 35);
+        if (isFailGrade) {
+          rankInput.value = 0;
+        } else {
+          currentRank++
+          rankInput.value = currentRank;
+          }
+        })
+      }
+    }
+  
+  function addStudent() {
+    var studentRow = `<tr>
+              <td><input type="text" class="form-control"/></td>
+              <td><input type="number" onkeyup="changeMark(this)" class="form-control" /></td>
+              <td><input type="number" onkeyup="changeMark(this)" class="form-control" /></td>
+              <td><input type="number" onkeyup="changeMark(this)" class="form-control" /></td>
+              <td><input type="number" onkeyup="changeMark(this)" class="form-control" /></td>
+              <td><input type="number" onkeyup="changeMark(this)" class="form-control" /></td>
+              <td><input type="text" result="total" readonly class="form-control" /></td>
+              <td><input type="text" result="rank" readonly class="form-control" /></td>
+              <td>
+                  <button type="button" class="btn btn-primary" onclick="deleteRow(this)">Delete</button></td>
+              </tr>`
+    studentList.insertAdjacentHTML('beforeend', studentRow);
+  }
+
+  function updateRanks() {
+    var studentRows = Array.from(document.querySelectorAll('#studentList tr'))
+    rankDatabase = studentRows.map((row) => {
+      var name = row.querySelector('input[type="text"]').value;
+      var marks = Array.from(row.querySelectorAll('input[type="number"]')).map(input => parseInt(input.value || 0));
+      var totalInput = row.querySelector('input[result="total"]')
+      return {
+        name: name,
+        marks: marks,
+        total: parseInt(totalInput.value || 0),
+        row,
+      }
+    })
+
+    if (document.getElementById('total').checked) {
+      rankBasedOnTotal()
+    } else {
+      rankBasedOnPriority()
+    }
+  }
+
+  function changeMark(e) {
+    if (e.value < 0) e.value = '';
+    if (e.value > 100) e.value = '';
+    const tableRow = e.parentElement.parentElement;
+    const numberInputs = tableRow.querySelectorAll('input[type="number"]');
+    var total = 0
+    var isEmptyValue = false
+
+    numberInputs.forEach(function (inputbox) {
+      if (inputbox.value === '') {
+        isEmptyValue = true
+      }
+      total = total + parseInt(inputbox.value || 0)
+    });
+    const totalInput = tableRow.querySelector('input[result="total"]');
+    totalInput.value = total
+
+    if (isEmptyValue) {
+      tableRow.classList.add('rowError');
+    } else {
+      tableRow.classList.remove('rowError');
+    }
+    updateRanks()
+  }
+
+  function deleteRow(e) {
+    e.parentElement.parentElement.remove()
+    updateRanks()
+  }
+
+</script>
 
 </html>
